@@ -28,6 +28,85 @@ términos de cantidad total.
  * 
  */
 
-public class Ejercicio1 {
-    
-}
+ import java.util.*;
+
+ public class Ejercicio1 {
+ 
+     public static void main(String[] args) {
+         // 1. Definir la lista de ventas
+         List<String> ventas = Arrays.asList(
+             "camisa,2,20.00",
+             "pantalon,1,35.50",
+             "zapatos,3,50.00",
+             "camisa,1,20.00",
+             "pantalon,2,35.50"
+         );
+ 
+         // 2. Llamar a los métodos y mostrar resultados
+         double ingresoTotal = calcularIngresoTotal(ventas);
+         System.out.println("Ingreso total: $" + ingresoTotal);
+ 
+         Map<String, Integer> ventasPorProducto = contarVentasPorProducto(ventas);
+         System.out.println("Ventas por producto: " + ventasPorProducto);
+ 
+         List<String> ventasFiltradas = filtrarVentasMayores(ventas, 50.00);
+         System.out.println("Ventas mayores a $50.00: " + ventasFiltradas);
+ 
+         String productoMasVendido = obtenerProductoMasVendido(ventas);
+         System.out.println("Producto más vendido: " + productoMasVendido);
+     }
+ 
+     // Método 1: Calcular el ingreso total
+     public static double calcularIngresoTotal(List<String> ventas) {
+         double ingresoTotal = 0.0;
+         for (String venta : ventas) {
+             String[] partes = venta.split(","); // Separar por comas
+             double cantidad = Double.parseDouble(partes[1]);
+             double precioUnitario = Double.parseDouble(partes[2]);
+             ingresoTotal += cantidad * precioUnitario; // Sumar al ingreso total
+         }
+         return ingresoTotal;
+     }
+ 
+     // Método 2: Contar ventas por producto
+     public static Map<String, Integer> contarVentasPorProducto(List<String> ventas) {
+         Map<String, Integer> contador = new HashMap<>();
+         for (String venta : ventas) {
+             String[] partes = venta.split(",");
+             String producto = partes[0];
+             int cantidad = Integer.parseInt(partes[1]);
+             contador.put(producto, contador.getOrDefault(producto, 0) + cantidad); // Sumar cantidad
+         }
+         return contador;
+     }
+ 
+     // Método 3: Filtrar ventas mayores a un monto
+     public static List<String> filtrarVentasMayores(List<String> ventas, double montoEspecifico) {
+         List<String> ventasFiltradas = new ArrayList<>();
+         for (String venta : ventas) {
+             String[] partes = venta.split(",");
+             double cantidad = Double.parseDouble(partes[1]);
+             double precioUnitario = Double.parseDouble(partes[2]);
+             double ingreso = cantidad * precioUnitario;
+             if (ingreso > montoEspecifico) {
+                 ventasFiltradas.add(venta); // Agregar venta a la lista si cumple
+             }
+         }
+         return ventasFiltradas;
+     }
+ 
+     // Método 4: Obtener el producto más vendido
+     public static String obtenerProductoMasVendido(List<String> ventas) {
+         Map<String, Integer> contador = contarVentasPorProducto(ventas); // Reusar el método 2
+         String productoMasVendido = "";
+         int maxCantidad = 0;
+         for (Map.Entry<String, Integer> entry : contador.entrySet()) {
+             if (entry.getValue() > maxCantidad) {
+                 productoMasVendido = entry.getKey();
+                 maxCantidad = entry.getValue();
+             }
+         }
+         return productoMasVendido;
+     }
+ }
+ 

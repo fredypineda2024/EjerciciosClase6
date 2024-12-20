@@ -70,6 +70,90 @@ Encuentra estos lotes y el tipo de fallo asociado para tomar medidas urgentes.
   aprobación después de esta mejora.
  */
 
-public class Ejercicio5 {
-    
-}
+ import java.util.*;
+
+ public class Ejercicio5 {
+     public static void main(String[] args) {
+         // Datos de entrada
+         List<String> productos = Arrays.asList(
+             "TabletX,Lote A,8",
+             "SmartphoneY,LoteB,7",
+             "SmartwatchZ,Lote C,6",
+             "LaptopW,Lote D,9",
+             "TabletX,Lote E,8"
+         );
+ 
+         List<String> inspecciones = Arrays.asList(
+             "LoteA, funcionalidad, 85",
+             "Lote B, seguridad, 92",
+             "Lote C, funcionalidad, 75",
+             "Lote D, seguridad, 60",
+             "Lote A, seguridad, 88",
+             "Lote C, seguridad, 82",
+             "Lote B, funcionalidad, 80"
+         );
+ 
+         List<String> fallos = Arrays.asList(
+             "Lote A, sobrecalentamiento, 3",
+             "Lote B, pantalla, 5",
+             "Lote C, batería, 2",
+             "Lote D, sobrecalentamiento, 7",
+             "Lote A, pantalla, 2"
+         );
+ 
+         // 1. Índice de aprobación por lote
+         Map<String, Integer> sumaAprobacion = new HashMap<>();
+         Map<String, Integer> conteoAprobacion = new HashMap<>();
+ 
+         for (String inspeccion : inspecciones) {
+             String[] partes = inspeccion.split(", ");
+             String lote = partes[0];
+             int porcentaje = Integer.parseInt(partes[2]);
+ 
+             sumaAprobacion.put(lote, sumaAprobacion.getOrDefault(lote, 0) + porcentaje);
+             conteoAprobacion.put(lote, conteoAprobacion.getOrDefault(lote, 0) + 1);
+         }
+ 
+         System.out.println("Índice de Aprobación por Lote:");
+         for (String lote : sumaAprobacion.keySet()) {
+             double promedio = sumaAprobacion.get(lote) * 1.0 / conteoAprobacion.get(lote);
+             System.out.println(lote + ": " + promedio);
+             if (promedio < 80) {
+                 System.out.println("  Atención: Lote con índice de aprobación bajo.");
+             }
+         }
+ 
+         // 2. Lotes con alta complejidad y baja aprobación
+         System.out.println("\nLotes con alta complejidad y baja aprobación:");
+         for (String producto : productos) {
+             String[] partes = producto.split(",");
+             String lote = partes[1];
+             int complejidad = Integer.parseInt(partes[2]);
+ 
+             if (complejidad > 7 && sumaAprobacion.containsKey(lote)) {
+                 double promedio = sumaAprobacion.get(lote) * 1.0 / conteoAprobacion.get(lote);
+                 if (promedio < 85) {
+                     System.out.println(lote + ": Complejidad " + complejidad + ", Aprobación " + promedio);
+                 }
+             }
+         }
+ 
+         // 3. Fallos frecuentes
+         Map<String, Integer> conteoFallos = new HashMap<>();
+         for (String fallo : fallos) {
+             String[] partes = fallo.split(", ");
+             String tipoFallo = partes[1];
+             int cantidad = Integer.parseInt(partes[2]);
+ 
+             conteoFallos.put(tipoFallo, conteoFallos.getOrDefault(tipoFallo, 0) + cantidad);
+         }
+ 
+         System.out.println("\nFallos frecuentes:");
+         for (String fallo : conteoFallos.keySet()) {
+             if (conteoFallos.get(fallo) > 3) {
+                 System.out.println(fallo + ": " + conteoFallos.get(fallo));
+             }
+         }
+     }
+ }
+ 
